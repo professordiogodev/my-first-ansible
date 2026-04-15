@@ -1,0 +1,40 @@
+- name: Uninstall Web Servers
+  hosts: webservers
+  become: true
+  tasks:
+    - name: Stop Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: stopped
+      ignore_errors: true # Prevents the playbook from failing if nginx is already gone
+
+    - name: Remove Nginx package and configs
+      ansible.builtin.apt:
+        name: nginx
+        state: absent
+        purge: yes
+        autoremove: yes
+
+- name: Uninstall Database Servers
+  hosts: databases
+  become: true
+  tasks:
+    - name: Stop PostgreSQL service
+      ansible.builtin.service:
+        name: postgresql
+        state: stopped
+      ignore_errors: true
+
+    - name: Remove PostgreSQL package and data
+      ansible.builtin.apt:
+        name: 
+          - postgresql
+          - postgresql-contrib
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Remove PostgreSQL data directory (Optional)
+      ansible.builtin.file:
+        path: /var/lib/postgresql
+        state: absent
