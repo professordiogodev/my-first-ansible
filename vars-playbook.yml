@@ -1,0 +1,41 @@
+- name: Deploy app
+  hosts: webservers
+
+  vars_files:
+  - vars/common.yml
+
+  vars:                          # play-level variables
+    app_name: myapp
+    app_port: 8080
+    app_dirs:                    # list
+      - /var/www/myapp
+      - /var/log/myapp
+    db:                          # nested dict
+      host: db.example.com
+      port: 5432
+      name: myapp_prod
+
+  tasks:
+    - name: Show app name
+      debug:
+        msg: "App: {{ app_name }} on port {{ app_port }} by {{ teacher }}"
+
+    - name: Show DB host (dot notation)
+      debug:
+        msg: "DB: {{ db.host }}:{{ db.port }}"
+
+    - name: Show DB host (bracket notation)
+      debug:
+        msg: "DB: {{ db['host'] }}"
+
+    - name: Show OS info
+      ansible.builtin.debug:
+        msg: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Show primary IP
+      ansible.builtin.debug:
+        msg: "IP: {{ ansible_default_ipv4.address }}"
+
+    - name: Show total RAM in MB
+      ansible.builtin.debug:
+        msg: "RAM: {{ ansible_memtotal_mb }} MB"
