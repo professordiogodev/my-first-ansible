@@ -1,0 +1,13 @@
+{{ teacher }} is teaching.
+
+This is running on {{ ansible_host }}.
+
+The app directories are:
+
+{% for dir in app_dirs %}
+Folder: {{ dir }}
+{% endfor %}
+
+{% if db.host is defined and db.host %}
+Host for the db: {{ db.host }}
+{% endif %}

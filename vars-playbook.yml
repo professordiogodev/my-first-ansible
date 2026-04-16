@@ -1,8 +1,9 @@
 - name: Deploy app
-  hosts: webservers
+  hosts: all
 
   vars_files:
   - vars/common.yml
+  - vars/secrets.yml
 
   vars:                          # play-level variables
     app_name: myapp
@@ -28,6 +29,10 @@
       debug:
         msg: "DB: {{ db['host'] }}"
 
+    - name: Connect to DB
+      debug:
+        msg: "Using DB Password: {{ db_password }}"
+
     - name: Show OS info
       ansible.builtin.debug:
         msg: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
@@ -39,3 +44,21 @@
     - name: Show total RAM in MB
       ansible.builtin.debug:
         msg: "RAM: {{ ansible_memtotal_mb }} MB"
+
+    - name: Render the notes files
+      template:
+        src: ./templates/notes.txt.j2
+        dest: /home/ubuntu/notes.txt
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+
+- name: Print Server Engine
+  hosts: webservers
+
+  tasks:
+    - name: Show server engine
+      debug:
+        msg: "Engine running: {{ server_engine }}"
+
+
